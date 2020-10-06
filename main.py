@@ -1,12 +1,23 @@
+# -*- coding: utf-8 -*-
+
+
+
+
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
+# 크롬 헤드리스 옵션
+chrome_options = Options()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+
 # 드라이버 설정
-path = 'C:\\chromedriver'
-driver = webdriver.Chrome(path)
+driver = webdriver.Chrome(executable_path='/home/ec2-user/covid_autologin/chromedriver', options=chrome_options)
 driver.implicitly_wait(10)
 driver.get('https://hcs.eduro.go.kr')
 
@@ -53,6 +64,7 @@ driver.find_element_by_xpath('//*[@id="WriteInfoForm"]/table/tbody/tr/td/input')
 driver.find_element_by_xpath('//*[@id="btnConfirm"]').click()
 
 # 참여자 목록
+time.sleep(3)
 element = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul/li/a')
 driver.execute_script('arguments[0].click();', element)
 
