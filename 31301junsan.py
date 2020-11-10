@@ -17,7 +17,7 @@ chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument('--disable-dev-shm-usage')
 
 # 드라이버 설정
-driver = webdriver.Chrome(executable_path='/home/ec2-user/covid_autologin/chromedriver', options=chrome_options)
+driver = webdriver.Chrome(executable_path='chromedriver.exe', options=chrome_options)
 driver.implicitly_wait(10)
 driver.get('https://hcs.eduro.go.kr')
 
@@ -68,24 +68,21 @@ time.sleep(3)
 element = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul/li/a')
 driver.execute_script('arguments[0].click();', element)
 
-# 1) 학생의 몸에 열이 있나요?
+# 1) 학생 본인이 37.5'C 이상 발열 또는 발열감이 있나요??
+#    단, 기저질환 등으로 코로나19와 관계없이 평소에 발열 증상이 계속되는 경우는 제외
 radio = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="container"]/div/div/div[2]/div[2]/dl[1]/dd/ul/li[1]/label')))
 driver.execute_script("arguments[0].click();", radio)
 
-# 2) 학생에게 코로나19가 의심되는 증상이 있나요?
+# 2) 학생에게 코로나19가 의심되는 아래의 임상증상*이 있나요?
+#    *(주요 임상증상) 기침, 호흡곤란, 오한, 근육통, 두통, 인후통, 후각·미각 소실 또는 폐렴
+#    단, 기저질환 등으로 코로나19와 관계없이 평소에 다음 증상이 계속되는 경우는 제외
 radio = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="container"]/div/div/div[2]/div[2]/dl[2]/dd/ul/li[1]/label')))
 driver.execute_script("arguments[0].click();", radio)
 
-# 3) 학생이 최근(14일 이내) 해외여행을 다녀온 사실이 있나요?
+# 3) 학생 본인 또는 동거인이 방역당국에 의해 현재 자가격리가 이루어지고 있나요?
+#    ※ <방역당국 지침> 최근 14일 이내 해외 입국자, 확진자와 접촉자 등은 자가격리 조치
+#    단, 직업특성상 잦은 해외 입·출국으로 의심증상이 없는 경우 자가격리 면제
 radio = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="container"]/div/div/div[2]/div[2]/dl[3]/dd/ul/li[1]/label')))
-driver.execute_script("arguments[0].click();", radio)
-
-# 4) 동거가족 중 최근(14일 이내) 해외여행을 다녀온 사실이 있나요?
-radio = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="container"]/div/div/div[2]/div[2]/dl[4]/dd/ul/li[1]/label')))
-driver.execute_script("arguments[0].click();", radio)
-
-# 5) 동거가족 중 현재 자가격리 중인 가족이 있나요?
-radio = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="container"]/div/div/div[2]/div[2]/dl[5]/dd/ul/li[1]/label')))
 driver.execute_script("arguments[0].click();", radio)
 
 # 제출
